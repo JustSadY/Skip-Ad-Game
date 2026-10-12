@@ -3,7 +3,7 @@ window.LevelModules = window.LevelModules || {};
 
 window.LevelModules['micro_x'] = {
   id: 'micro_x',
-  url: 'https://fullscreen-banner-trap.cc/ad',
+  url: 'https://fullscreen-ad-network.net/display',
   tabTitle: (lang) => lang === 'tr' ? 'Sponsorlu Reklam' : 'Sponsored Banner',
 
   render: function(container, onComplete, onError, showToast, t) {
@@ -162,7 +162,7 @@ window.LevelModules['micro_x'] = {
             box-shadow: 0 4px 14px rgba(26,115,232,0.4);
             letter-spacing: 0.5px;
           ">
-            ${isTr ? 'HEDİYEYİ AL & REKLAMI KAPAT (TUZAK)' : 'CLAIM PRIZE (TRAP)'}
+            ${isTr ? 'HEDİYEYİ AL & REKLAMI KAPAT' : 'CLAIM PRIZE & CLOSE'}
           </button>
 
         </div>

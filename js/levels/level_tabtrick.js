@@ -47,18 +47,13 @@ window.LevelModules['tabtrick'] = {
           </h1>
           <p style="font-size: 14px; color: #f5d0fe; max-width: 440px; margin-bottom: 24px; line-height: 1.5;">
             ${isTr 
-              ? 'Bu pop-under reklam sekmesi otomatik açıldı! Asıl indirme sayfasına dönmek için yukarıdaki sekme çubuğundan diğer sekmeye tıklayın veya aşağıdaki butona basın!' 
+              ? 'Bu pop-under reklam sekmesi otomatik açıldı! Asıl indirme sayfasına dönmek için yukarıdaki sekme çubuğundan diğer sekmeye tıklayın!' 
               : 'This pop-under tab opened automatically! Click the original tab in the top tab bar to return!'}
           </p>
 
-          <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-            <button id="casinoTrapBtn" style="background: #e11d48; color: #fff; font-family: var(--font-ui); font-size: 15px; font-weight: 900; padding: 12px 28px; border-radius: 10px; border: 2px solid #fda4af; cursor: pointer; box-shadow: 0 10px 25px rgba(225,29,72,0.6);">
-              ${isTr ? 'ÖDÜLÜ AL (TUZAK)' : 'CLAIM PRIZE (TRAP)'}
-            </button>
-
-            <!-- YEDEK MOBİL/KULLANICI GEÇİŞİ: "SEKMEYİ KAPAT" -->
-            <button id="closeCasinoTabBtn" style="background: #334155; color: #cbd5e1; font-family: var(--font-ui); font-size: 13px; font-weight: 700; padding: 12px 20px; border-radius: 10px; border: 1px solid #475569; cursor: pointer;">
-              ✕ ${isTr ? 'Bu Sekmeyi Kapat ve Geri Dön' : 'Close Tab & Return'}
+          <div style="display: flex; justify-content: center;">
+            <button id="casinoTrapBtn" style="background: #e11d48; color: #fff; font-family: var(--font-ui); font-size: 15px; font-weight: 900; padding: 12px 32px; border-radius: 10px; border: 2px solid #fda4af; cursor: pointer; box-shadow: 0 10px 25px rgba(225,29,72,0.6);">
+              ${isTr ? 'ÖDÜLÜ AL' : 'CLAIM PRIZE'}
             </button>
           </div>
         </div>
@@ -69,14 +64,7 @@ window.LevelModules['tabtrick'] = {
         trapBtn.addEventListener('click', () => {
           onError();
           if (window.AudioEngine) window.AudioEngine.play('fail');
-          showToast(isTr ? 'Tuzak reklam! Yukarıdaki sekmelerden orijinal sekmeye dönün!' : 'Trap ad! Switch back to the original tab in the tab bar above!');
-        });
-      }
-
-      const closeBtn = document.getElementById('closeCasinoTabBtn');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-          switchToRealPage();
+          showToast(isTr ? 'Sponsorlu reklam sekmesi! Yukarıdaki sekmelerden orijinal sekmeye dönün.' : 'Sponsored ad tab! Switch back to the original tab.');
         });
       }
     };

@@ -32,7 +32,7 @@ const translations = {
     fake_ad_desc: "Beklenen açık dünya oyunu yayında! Oyunu hemen başlatmak için aşağıdaki butona basın.",
     fake_ad_btn: "OYUNU BAŞLAT (68 GB)",
     toast_wait: "Lütfen 5 saniye bekleyin! Reklamı henüz geçemezsiniz!",
-    toast_fake_click: "Tuzak butona tıkladınız! Gerçek 'REKLAMI GEÇ' butonunu bulun!",
+    toast_fake_click: "Sponsorlu reklama tıkladınız! Gerçek 'REKLAMI GEÇ' butonunu bulun!",
     toast_level_success: "Harika! Reklamı geçtiniz, sıradaki aşama yükleniyor..."
   },
   en: {
@@ -63,7 +63,7 @@ const translations = {
     fake_ad_desc: "The anticipated open-world game is live! Click the button below to launch the game immediately.",
     fake_ad_btn: "LAUNCH GAME (68 GB)",
     toast_wait: "Please wait 5 seconds! You cannot skip the ad yet!",
-    toast_fake_click: "Trap button! Find the real 'SKIP AD' button!",
+    toast_fake_click: "Sponsored ad clicked! Find the real 'SKIP AD' button!",
     toast_level_success: "Awesome! You skipped the ad, loading next level..."
   }
 };

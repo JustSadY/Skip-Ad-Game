@@ -195,8 +195,8 @@ window.LevelModules['decoys'] = {
         onError();
         if (window.AudioEngine) window.AudioEngine.play('fail');
         showToast(isTr 
-          ? 'Tuzak! Üzerinde "AdChoices" yazan butonlar sponsorlu reklamlardır. Gerçek dosya kutusundaki butonu bulun.' 
-          : 'Trap! Buttons with "AdChoices" are sponsored ads. Find the button in the genuine file box.');
+          ? 'Sponsorlu reklam! Üzerinde "AdChoices" yazan butonlar reklamdır. Gerçek dosya kutusundaki butonu bulun.' 
+          : 'Sponsored ad! Buttons with "AdChoices" are ads. Find the button in the genuine file box.');
       });
     });
 

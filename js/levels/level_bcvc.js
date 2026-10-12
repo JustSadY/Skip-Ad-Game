@@ -95,7 +95,7 @@ window.LevelModules['bcvc'] = {
       onError();
       fakeCard.classList.add('shake-anim');
       setTimeout(() => fakeCard.classList.remove('shake-anim'), 350);
-      showToast(t('toast_fake_click') || 'Tuzak butona tıkladınız! Sağ üstteki reklamı geç butonunu bekleyin!');
+      showToast(t('toast_fake_click') || 'Sponsorlu reklam alanına tıkladınız! Sağ üstteki reklamı geç butonunu bekleyin.');
     };
 
     fakeBtn.addEventListener('click', handleTrap);

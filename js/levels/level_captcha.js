@@ -6,10 +6,25 @@ window.LevelModules['captcha'] = {
   url: 'https://security-verify.net/bot-check',
   tabTitle: (lang) => lang === 'tr' ? 'Robot Doğrulaması' : 'Bot Verification',
 
+  resetTimeout: null,
+
   render: function(container, onComplete, onError, showToast, t) {
+    this.cleanup();
     const isTr = (window.currentLanguage || 'tr') === 'tr';
 
-    // GERÇEK FOTOĞRAFLI KATEGORİ HAVUZU
+    // TAMAMEN NÖTR DEKORATİF RESİMLER (HİÇBİR HEDEFLE KARIŞMAZ: ÇİÇEK, AĞAÇ, KÖPRÜ, BANK, HAVUZ)
+    const neutralDecoys = [
+      'assets/captcha/decoy_mailbox_1.jpg', // Gül bahçesi
+      'assets/captcha/decoy_mailbox_2.jpg', // Çimenlikte meşe ağacı
+      'assets/captcha/decoy_car_1.jpg',     // Kütüphane kitap rafları
+      'assets/captcha/decoy_car_2.jpg',     // Yeşil park çimi
+      'assets/captcha/decoy_car_3.jpg',     // Tarihi taş köprü
+      'assets/captcha/decoy_bench_1.jpg',   // Park bankı
+      'assets/captcha/decoy_bench_2.jpg',   // Çimenlikte bank
+      'assets/captcha/decoy_lamp_1.jpg'     // Park fıskiyesi / su havuzu
+    ];
+
+    // 5 FARKLI KRİSTAL NETLİKTE KATEGORİ HAVUZU
     const themes = [
       {
         id: 'traffic_light',
@@ -23,15 +38,7 @@ window.LevelModules['captcha'] = {
           'assets/captcha/traffic_light_3.jpg',
           'assets/captcha/traffic_light_4.jpg'
         ],
-        decoyPhotos: [
-          'assets/captcha/decoy_lamp_1.jpg',
-          'assets/captcha/decoy_car_1.jpg',
-          'assets/captcha/decoy_bench_1.jpg',
-          'assets/captcha/decoy_mailbox_1.jpg',
-          'assets/captcha/bus_1.jpg',
-          'assets/captcha/hydrant_1.jpg',
-          'assets/captcha/decoy_car_2.jpg'
-        ]
+        decoyPhotos: neutralDecoys
       },
       {
         id: 'hydrant',
@@ -45,15 +52,7 @@ window.LevelModules['captcha'] = {
           'assets/captcha/hydrant_3.jpg',
           'assets/captcha/hydrant_4.jpg'
         ],
-        decoyPhotos: [
-          'assets/captcha/decoy_mailbox_1.jpg',
-          'assets/captcha/decoy_mailbox_2.jpg',
-          'assets/captcha/decoy_lamp_2.jpg',
-          'assets/captcha/decoy_bench_2.jpg',
-          'assets/captcha/decoy_car_1.jpg',
-          'assets/captcha/bicycle_1.jpg',
-          'assets/captcha/decoy_lamp_1.jpg'
-        ]
+        decoyPhotos: neutralDecoys
       },
       {
         id: 'crosswalk',
@@ -67,15 +66,7 @@ window.LevelModules['captcha'] = {
           'assets/captcha/crosswalk_3.jpg',
           'assets/captcha/crosswalk_4.jpg'
         ],
-        decoyPhotos: [
-          'assets/captcha/decoy_car_1.jpg',
-          'assets/captcha/decoy_car_2.jpg',
-          'assets/captcha/decoy_lamp_1.jpg',
-          'assets/captcha/decoy_bench_1.jpg',
-          'assets/captcha/bus_2.jpg',
-          'assets/captcha/traffic_light_2.jpg',
-          'assets/captcha/decoy_bench_2.jpg'
-        ]
+        decoyPhotos: neutralDecoys
       },
       {
         id: 'bicycle',
@@ -89,15 +80,7 @@ window.LevelModules['captcha'] = {
           'assets/captcha/bicycle_3.jpg',
           'assets/captcha/bicycle_4.jpg'
         ],
-        decoyPhotos: [
-          'assets/captcha/bus_1.jpg',
-          'assets/captcha/decoy_car_1.jpg',
-          'assets/captcha/decoy_lamp_2.jpg',
-          'assets/captcha/decoy_bench_1.jpg',
-          'assets/captcha/hydrant_2.jpg',
-          'assets/captcha/decoy_mailbox_2.jpg',
-          'assets/captcha/decoy_car_3.jpg'
-        ]
+        decoyPhotos: neutralDecoys
       },
       {
         id: 'bus',
@@ -111,15 +94,7 @@ window.LevelModules['captcha'] = {
           'assets/captcha/bus_3.jpg',
           'assets/captcha/bus_4.jpg'
         ],
-        decoyPhotos: [
-          'assets/captcha/decoy_car_1.jpg',
-          'assets/captcha/decoy_car_2.jpg',
-          'assets/captcha/decoy_car_3.jpg',
-          'assets/captcha/bicycle_2.jpg',
-          'assets/captcha/decoy_bench_2.jpg',
-          'assets/captcha/hydrant_3.jpg',
-          'assets/captcha/decoy_lamp_1.jpg'
-        ]
+        decoyPhotos: neutralDecoys
       }
     ];
 
@@ -150,6 +125,7 @@ window.LevelModules['captcha'] = {
     };
 
     let activeItems = buildChallenge();
+    const self = this;
 
     const renderCaptchaContent = () => {
       container.innerHTML = `
@@ -182,7 +158,7 @@ window.LevelModules['captcha'] = {
                 ${isTr ? currentTheme.targetTr : currentTheme.targetEn}
               </div>
               <div style="font-size: 11px; opacity: 0.88; margin-top: 6px;">
-                ${isTr ? 'Hiçbiri kalmayınca doğrula butonuna basın.' : 'Click verify once there are none left.'}
+                ${isTr ? 'İlgili tüm kareleri seçtikten sonra DOĞRULA butonuna basın.' : 'Click verify once you have selected all matching squares.'}
               </div>
             </div>
 
@@ -210,7 +186,7 @@ window.LevelModules['captcha'] = {
                 padding-left: 4px;
                 display: none;
               ">
-                ${isTr ? 'Lütfen tüm doğru görselleri seçin.' : 'Please select all matching images.'}
+                ${isTr ? 'Lütfen tekrar deneyin. Tüm doğru kareleri seçtiğinizden emin olun.' : 'Please try again. Select all matching squares.'}
               </div>
             </div>
 
@@ -271,6 +247,7 @@ window.LevelModules['captcha'] = {
       activeItems.forEach((item, index) => {
         const tile = document.createElement('div');
         tile.className = 'captcha-tile';
+        tile.dataset.index = index;
         tile.style.cssText = `
           position: relative;
           aspect-ratio: 1;
@@ -280,7 +257,7 @@ window.LevelModules['captcha'] = {
           background-position: center;
           border-radius: 2px;
           overflow: hidden;
-          transition: transform 0.15s ease, box-shadow 0.15s ease;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
           user-select: none;
         `;
 
@@ -290,21 +267,23 @@ window.LevelModules['captcha'] = {
             tile.style.transform = 'scale(1)';
             tile.style.boxShadow = 'none';
             tile.style.outline = 'none';
+            tile.style.filter = 'none';
             const badge = tile.querySelector('.check-circle-badge');
             if (badge) badge.remove();
           } else {
             selected.add(index);
-            tile.style.transform = 'scale(0.88)';
+            tile.style.transform = 'scale(0.92)';
             tile.style.boxShadow = '0 0 0 3px #1a73e8';
             tile.style.outline = '2px solid #ffffff';
+            tile.style.filter = 'brightness(0.92)';
             
-            // Orijinal reCAPTCHA mavi tik dairesi
+            // Orijinal reCAPTCHA mavi tik dairesi (pointer-events: none ile tıklamayı engellemez)
             const badge = document.createElement('div');
             badge.className = 'check-circle-badge';
             badge.style.cssText = `
               position: absolute;
-              top: 4px;
-              left: 4px;
+              top: 5px;
+              left: 5px;
               width: 22px;
               height: 22px;
               background: #1a73e8;
@@ -317,6 +296,7 @@ window.LevelModules['captcha'] = {
               font-size: 13px;
               font-weight: 900;
               box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+              pointer-events: none;
             `;
             badge.textContent = '✓';
             tile.appendChild(badge);
@@ -367,7 +347,9 @@ window.LevelModules['captcha'] = {
           // Hatalı seçim: Titreme animasyonu & hata mesajı
           if (errorMsg) {
             errorMsg.style.display = 'block';
-            errorMsg.textContent = isTr ? 'Lütfen tüm doğru görselleri seçin.' : 'Please select all matching images.';
+            errorMsg.textContent = isTr 
+              ? 'Lütfen tekrar deneyin. Tüm doğru kareleri seçtiğinizden emin olun.' 
+              : 'Please try again. Select all matching squares.';
           }
           if (card) {
             card.style.transform = 'translateX(-8px)';
@@ -378,6 +360,18 @@ window.LevelModules['captcha'] = {
           }
           onError();
           if (window.AudioEngine) window.AudioEngine.play('fail');
+
+          // Kullanıcının kilitlenmemesi için kısa süre sonra yeni soru getir
+          self.resetTimeout = setTimeout(() => {
+            currentTheme = themes[Math.floor(Math.random() * themes.length)];
+            activeItems = buildChallenge();
+            renderCaptchaContent();
+            const newError = document.getElementById('captchaErrorMsg');
+            if (newError) {
+              newError.style.display = 'block';
+              newError.textContent = isTr ? 'Lütfen tekrar deneyin.' : 'Please try again.';
+            }
+          }, 800);
         }
       });
     };
@@ -385,5 +379,10 @@ window.LevelModules['captcha'] = {
     renderCaptchaContent();
   },
 
-  cleanup: function() {}
+  cleanup: function() {
+    if (this.resetTimeout) {
+      clearTimeout(this.resetTimeout);
+      this.resetTimeout = null;
+    }
+  }
 };

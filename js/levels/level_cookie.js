@@ -128,7 +128,7 @@ window.LevelModules['cookie'] = {
               ${isTr ? 'Tercihlerimi Onayla ve Reklamı Geç' : 'Confirm Choices & Skip Ad'}
             </button>
 
-            <!-- TUZAK BUTONLAR -->
+            <!-- ÇEREZ BUTONLARI -->
             <div style="display: flex; gap: 8px;">
               <button id="trapAcceptAllBtn" style="
                 flex: 1;
@@ -141,7 +141,7 @@ window.LevelModules['cookie'] = {
                 font-weight: 600;
                 cursor: pointer;
               ">
-                ${isTr ? 'Tümünü Kabul Et (Tuzak)' : 'Accept All (Trap)'}
+                ${isTr ? 'Tümünü Kabul Et' : 'Accept All'}
               </button>
 
               <button id="trapRejectAllBtn" style="
@@ -155,7 +155,7 @@ window.LevelModules['cookie'] = {
                 font-weight: 600;
                 cursor: pointer;
               ">
-                ${isTr ? 'Tümünü Reddet (Tuzak)' : 'Reject All (Trap)'}
+                ${isTr ? 'Tümünü Reddet' : 'Reject All'}
               </button>
             </div>
 

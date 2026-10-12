@@ -112,7 +112,7 @@ window.LevelModules['human_calc'] = {
               ⚠️ ${isTr ? 'Doğrulama zaman aşımına uğramadan hızlıca tıkla!' : 'Click fast before session expires!'}
             </span>
             <button id="trapFastPassBtn" style="background: #ef4444; color: #fff; border: none; padding: 5px 12px; border-radius: 5px; font-size: 11px; font-weight: 700; cursor: pointer;">
-              ${isTr ? 'HIZLI GEÇ (TUZAK)' : 'QUICK PASS (TRAP)'}
+              ${isTr ? 'HIZLI GEÇ' : 'QUICK PASS'}
             </button>
           </div>
 
