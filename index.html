@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reklamı Geç! (Skip Ad)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="app">
+    
+    <!-- ======================================================= -->
+    <!-- 1. GİRİŞ EKRANI (BASİT VE TEMİZ BAŞLANGIÇ SAYFASI)       -->
+    <!-- ======================================================= -->
+    <section class="screen title-screen" id="titleScreen">
+      
+      <h1 class="game-main-title">
+        <span data-i18n="game_title_1">REKLAMI</span> <span class="highlight" data-i18n="game_title_2">GEÇ!</span>
+      </h1>
+
+      <p class="game-tagline" data-i18n="game_tagline">
+        Oyuna girmek istiyorsun. Ama internetin reklamları buna izin vermiyor. Tek bir görevin var: Reklamı geçmek.
+      </p>
+
+      <div class="menu-button-group">
+        <button class="btn-menu btn-play" id="startBtn">
+          <span data-i18n="btn_play">REKLAMI GEÇ</span>
+          <span style="font-size: 18px;">→</span>
+        </button>
+        <button class="btn-menu btn-secondary" id="settingsMenuBtn">
+          <span data-i18n="btn_settings">⚙️ AYARLAR</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- 2. OYUN EKRANI: "CHROME İÇİNDE CHROME"                   -->
+    <!-- ======================================================= -->
+    <section class="screen game-screen hidden" id="gameScreen">
+      
+      <div class="simulated-chrome" id="simulatedChrome">
+        
+        <!-- CHROME SEKME ÇUBUĞU (TAB STRIP) -->
+        <div class="chrome-tabstrip">
+          <div class="chrome-tabs-container">
+            <div class="chrome-tab active" id="activeChromeTab">
+              <span class="tab-icon">🔗</span>
+              <span class="tab-title" id="tabTitleText">link-skip - K-T-A 7</span>
+              <span class="tab-close" id="tabCloseBtn" title="Kapat">×</span>
+            </div>
+            <div class="chrome-newtab-btn" id="newTabBtn" title="Yeni Sekme">+</div>
+          </div>
+
+          <!-- PENCERE EYLEMLERİ (— ▢ ✕) -->
+          <div class="chrome-window-actions">
+            <div class="chrome-win-btn" title="Simge Durumuna Küçült" id="chromeMinBtn">―</div>
+            <div class="chrome-win-btn" title="Ekranı Kapla" id="chromeMaxBtn">▢</div>
+            <div class="chrome-win-btn close-btn" title="Kapat / Ana Menü" id="chromeCloseBtn">✕</div>
+          </div>
+        </div>
+
+        <!-- CHROME ARAÇ VE ADRES ÇUBUĞU -->
+        <div class="chrome-toolbar">
+          <div class="chrome-nav-btn" id="navBackBtn" title="Geri">←</div>
+          <div class="chrome-nav-btn" id="navForwardBtn" title="İleri">→</div>
+          <div class="chrome-nav-btn" id="navRefreshBtn" title="Yeniden Yükle">↻</div>
+
+          <!-- OMNIBOX (ADRES ÇUBUĞU) -->
+          <div class="chrome-omnibox">
+            <span class="chrome-ssl-lock">🔒</span>
+            <div class="chrome-url-text">
+              <span class="url-protocol">https://</span><span class="url-domain">link-skip.net</span><span class="url-path">/kta-7</span>
+            </div>
+            <span class="chrome-star-btn" title="Yer İşareti">☆</span>
+          </div>
+
+          <!-- SEVİYE GÖSTERGESİ VE MENÜ -->
+          <div class="chrome-extensions-group">
+            <div class="chrome-ext-btn" id="stageBadgeBtn">
+              <span id="chromeStageText">BÖLÜM 1 / 20</span>
+            </div>
+            <div class="chrome-menu-btn" id="chromeMenuBtn" title="Ayarlar / Menü">⋮</div>
+          </div>
+        </div>
+
+        <!-- DİNAMİK SEVİYE GÖRÜNTÜLEME ALANI (VIEWPORT) -->
+        <div class="chrome-viewport" id="chromeViewportContainer">
+          <!-- Seviye modülleri (levels/*.js) buraya dinamik olarak render edilir -->
+        </div>
+
+        <!-- TOAST BİLDİRİMİ -->
+        <div class="toast-popup" id="toastNotice">
+          <span id="toastIcon">⚠️</span>
+          <span id="toastMessage">Uyarı mesajı</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- AYARLAR MODAL (SETTINGS DIALOG - NO RESET PROGRESS)     -->
+    <!-- ======================================================= -->
+    <div class="modal-overlay" id="settingsModal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span>⚙️</span>
+            <span data-i18n="settings_title">Oyun Ayarları</span>
+          </div>
+          <button class="modal-close-btn" id="closeSettingsBtn" title="Kapat">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- DİL SEÇİMİ (LANGUAGE) -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name" data-i18n="settings_lang_title">Dil / Language</span>
+              <span class="setting-desc" data-i18n="settings_lang_desc">Oyun arayüz dili</span>
+            </div>
+            <div class="lang-selector">
+              <button class="lang-btn active" data-lang="tr">🇹🇷 TR</button>
+              <button class="lang-btn" data-lang="en">🇺🇸 EN</button>
+            </div>
+          </div>
+
+          <!-- SES AÇ/KAPA -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name" data-i18n="settings_sound_title">Ses Efektleri</span>
+              <span class="setting-desc" data-i18n="settings_sound_desc">Tıklama, sayaç ve hata sesleri</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="soundToggleCheck" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- SES SEVİYESİ -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name" data-i18n="settings_volume_title">Ses Seviyesi</span>
+              <span class="setting-desc" data-i18n="settings_volume_desc">Genel ses şiddeti</span>
+            </div>
+            <div class="range-wrap">
+              <input type="range" class="range-input" id="volumeRange" min="0" max="100" value="70">
+              <span class="range-val" id="volumeValText">70%</span>
+            </div>
+          </div>
+
+          <!-- EKRAN SARSINTISI -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name" data-i18n="settings_shake_title">Ekran Sarsıntısı</span>
+              <span class="setting-desc" data-i18n="settings_shake_desc">Hatalı hamlelerde titreşim efekti</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="shakeToggleCheck" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- TAM EKRAN -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name" data-i18n="settings_fs_title">Tam Ekran Modu</span>
+              <span class="setting-desc" data-i18n="settings_fs_desc">Daha odaklı bir deneyim için</span>
+            </div>
+            <button class="btn-action-small" id="fullscreenToggleBtn" data-i18n="btn_fs_enter">⛶ Tam Ekran</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEVİYE MODÜLLERİ (AYRI DOSYALAR) -->
+  <script src="js/levels/level_bcvc.js"></script>
+  <script src="js/levels/level_captcha.js"></script>
+  <script src="js/levels/level_flee.js"></script>
+  <script src="js/levels/level_popups.js"></script>
+  <script src="js/levels/level_decoys.js"></script>
+  <script src="js/levels/level_timer.js"></script>
+  <script src="js/levels/level_cookie.js"></script>
+  <script src="js/levels/level_micro_x.js"></script>
+  <script src="js/levels/level_tabtrick.js"></script>
+  <script src="js/levels/level_human_calc.js"></script>
+  <script src="js/levels/level_wheel.js"></script>
+  <script src="js/levels/level_fake_virus.js"></script>
+  <script src="js/levels/level_slider.js"></script>
+  <script src="js/levels/level_find_waldo.js"></script>
+  <script src="js/levels/level_cursor_lag.js"></script>
+  <script src="js/levels/level_terms_scroll.js"></script>
+  <script src="js/levels/level_broken_button.js"></script>
+  <script src="js/levels/level_password.js"></script>
+  <script src="js/levels/level_audio_captcha.js"></script>
+  <script src="js/levels/level_victory.js"></script>
+
+  <!-- ANA OYUN SCRIPTI -->
+  <script src="js/main.js"></script>
+</body>
+</html>
