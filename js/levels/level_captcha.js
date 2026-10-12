@@ -110,10 +110,10 @@ window.LevelModules['captcha'] = {
     let currentTheme = themes[Math.floor(Math.random() * themes.length)];
 
     const buildChallenge = () => {
-      // 3 veya 4 doğru görsel seç
-      const numCorrect = Math.random() < 0.5 ? 3 : 4;
+      // Her zaman tam 3 adet doğru görsel seç (3x3 ızgarada standart ve adil)
+      const numCorrect = 3;
       const shuffledCorrect = shuffle(currentTheme.correctPhotos).slice(0, numCorrect);
-      const numDecoys = 9 - numCorrect;
+      const numDecoys = 6;
       const shuffledDecoys = shuffle(currentTheme.decoyPhotos).slice(0, numDecoys);
 
       const items = [
