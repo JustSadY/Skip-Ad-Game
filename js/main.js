@@ -270,7 +270,21 @@ const puzzlePool = [
   'terms_scroll',  // 14 sayfalık kullanıcı sözleşmesi kaydırma
   'broken_button', // Vidaları kopan ve seken bozuk buton
   'password',      // Şifreli indirme kasası & spoiler kutuları
-  'audio_captcha'  // Sesli ritim & bip sayma robot testi
+  'audio_captcha', // Sesli ritim & bip sayma robot testi
+  'permission_maze', // Nightmare izin labirenti
+  'fake_skip', // Nightmare sahte geçiş butonları
+  'update_nightmare', // Nightmare sahte güncelleme
+  'loading_99', // Nightmare takılan yükleme
+  'captcha_marathon', // Nightmare CAPTCHA maratonu
+  'download_manager', // Nightmare indirme yöneticisi
+  'redirect_chain', // Nightmare yönlendirme zinciri
+  'support_bot', // Nightmare destek botu
+  'subscription_escape', // Abonelik iptal kabusu
+  'overlay_stack', // Katmanli reklam
+  'verification_codes', // Dogrulama kodu labirenti
+  'checkout_trap', // Sahte odeme duvari
+  'upload_errors', // Dosya yukleme hata labirenti
+  'survey_escape' // Bitmeyen anket
 ];
 
 function shuffleArray(arr) {
@@ -286,6 +300,8 @@ let activeLevelSequence = [];
 let currentLevelIndex = 0;
 let currentModule = null;
 let isLevelTransitioning = false;
+let pendingLevelTransition = null;
+let levelGeneration = 0;
 
 function generateGameSequence() {
   window.currentGame = getRandomGame(); // Her yeni oyunda farklı bir telifsiz efsane oyun seçilir
@@ -344,7 +360,7 @@ function updateChromeHeader() {
   if (!mod) return;
 
   const prefix = t('level_prefix');
-  chromeStageText.textContent = `${prefix} ${currentLevelIndex + 1} / 20`;
+  chromeStageText.textContent = `${prefix} ${currentLevelIndex + 1} / ${activeLevelSequence.length}`;
 
   const tabIcon = document.querySelector('#activeChromeTab .tab-icon');
   if (tabIcon) tabIcon.textContent = '🔗';
@@ -369,6 +385,11 @@ function updateChromeHeader() {
 }
 
 function loadLevel(index) {
+  levelGeneration++;
+  if (pendingLevelTransition !== null) {
+    clearTimeout(pendingLevelTransition);
+    pendingLevelTransition = null;
+  }
   if (currentModule && currentModule.cleanup) {
     currentModule.cleanup();
   }
@@ -390,30 +411,33 @@ function loadLevel(index) {
   currentModule = mod;
   updateChromeHeader();
 
+  const renderGeneration = levelGeneration;
   mod.render(
     viewportContainer,
     // onComplete callback:
     () => {
       // HIZLI / ÇİFT TIKLAMADA BİRDEN FAZLA BÖLÜM ATLAMASINI KESİN OLARAK ENGELLE
-      if (isLevelTransitioning) return;
+      if (renderGeneration !== levelGeneration || isLevelTransitioning) return;
       isLevelTransitioning = true;
       if (viewportContainer) {
         viewportContainer.style.pointerEvents = 'none'; // Yeni seviye gelene kadar tıklamaları tamamen dondur
       }
 
       window.AudioEngine.play('pass');
-      if (currentLevelIndex < 19) {
+      if (currentLevelIndex < activeLevelSequence.length - 1) {
         const nextIndex = currentLevelIndex + 1;
-        setTimeout(() => {
-          loadLevel(nextIndex);
+        pendingLevelTransition = setTimeout(() => {
+          pendingLevelTransition = null;
+          if (renderGeneration === levelGeneration) loadLevel(nextIndex);
         }, 150);
       } else {
         // 20. Seviye (Final Bölümü)
-        loadLevel(19);
+        loadLevel(activeLevelSequence.length - 1);
       }
     },
     // onError callback:
     () => {
+      if (renderGeneration !== levelGeneration || isLevelTransitioning) return;
       triggerError();
     },
     // showToast helper:
@@ -478,6 +502,11 @@ fullscreenToggleBtn.addEventListener('click', () => {
 
 // ANA MENÜYE DÖN / SIFIRLA
 function returnToMainMenu() {
+  levelGeneration++;
+  if (pendingLevelTransition !== null) {
+    clearTimeout(pendingLevelTransition);
+    pendingLevelTransition = null;
+  }
   if (currentModule && currentModule.cleanup) {
     currentModule.cleanup();
   }
@@ -535,7 +564,7 @@ try {
       titleScreen.classList.add('hidden');
       gameScreen.classList.remove('hidden');
       activeLevelSequence = ['bcvc', ...puzzlePool, 'victory'];
-      const idx = (targetLvl === 'victory' || targetLvl === '20')
+      const idx = (targetLvl === 'victory' || targetLvl === String(activeLevelSequence.length))
         ? activeLevelSequence.indexOf('victory')
         : (isNaN(targetLvl) ? activeLevelSequence.indexOf(targetLvl) : parseInt(targetLvl));
       loadLevel(idx >= 0 ? idx : 0);

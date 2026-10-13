@@ -8,9 +8,12 @@ window.LevelModules['cursor_lag'] = {
 
   mouseMoveHandler: null,
   clickHandler: null,
+  pendingTimers: [],
+  completed: false,
 
   render: function(container, onComplete, onError, showToast, t) {
     this.cleanup();
+    this.completed = false;
     const isTr = (window.currentLanguage || 'tr') === 'tr';
 
     container.innerHTML = `
@@ -85,13 +88,14 @@ window.LevelModules['cursor_lag'] = {
     let curY = 0;
 
     // Başlangıçta ortala
-    setTimeout(() => {
+    this.pendingTimers.push(setTimeout(() => {
+      if (!arena.isConnected) return;
       const rect = arena.getBoundingClientRect();
       curX = rect.width / 2;
       curY = rect.height / 2;
       cursor.style.left = `${curX}px`;
       cursor.style.top = `${curY}px`;
-    }, 50);
+    }, 50));
 
     // Ters Fare Hareketi
     this.mouseMoveHandler = (e) => {
@@ -138,23 +142,24 @@ window.LevelModules['cursor_lag'] = {
 
       const pad = 24; // Adil ve cömert tıklama toleransı
       const isVirtualHit = (curX >= btnLeft - pad && curX <= btnRight + pad && curY >= btnTop - pad && curY <= btnBottom + pad);
-      const isDirectHit = (e.target === targetBtn);
+      if (this.completed) return;
 
-      if (isVirtualHit || isDirectHit) {
+      if (isVirtualHit) {
+        this.completed = true;
         arena.style.pointerEvents = 'none';
         targetBtn.style.transform = 'scale(0.95)';
         targetBtn.style.background = '#22c55e';
         if (window.AudioEngine) window.AudioEngine.play('pass');
-        setTimeout(() => {
+        this.pendingTimers.push(setTimeout(() => {
           onComplete();
-        }, 250);
+        }, 250));
       } else {
         onError();
         if (window.AudioEngine) window.AudioEngine.play('fail');
         cursor.style.filter = 'drop-shadow(0 0 20px #ef4444)';
-        setTimeout(() => {
-          cursor.style.filter = 'drop-shadow(0 0 10px #f43f5e)';
-        }, 300);
+        this.pendingTimers.push(setTimeout(() => {
+          if (cursor.isConnected) cursor.style.filter = 'drop-shadow(0 0 10px #f43f5e)';
+        }, 300));
       }
     };
 
@@ -162,6 +167,8 @@ window.LevelModules['cursor_lag'] = {
   },
 
   cleanup: function() {
+    this.pendingTimers.forEach(clearTimeout);
+    this.pendingTimers = [];
     const arena = document.getElementById('invertedArena');
     if (arena) {
       if (this.mouseMoveHandler) arena.removeEventListener('mousemove', this.mouseMoveHandler);
